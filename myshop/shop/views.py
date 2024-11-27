@@ -64,3 +64,35 @@ def create_user_cart(sender, instance, created, **kwargs):
         Cart.objects.create(user=instance)
 
 post_save.connect(create_user_cart, sender=User)
+
+from django.contrib.auth import login, authenticate
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
+
+def register_view(request):
+    form = CustomUserCreationForm()
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('product_list')
+    context = {'form': form}
+    return render(request, 'shop/registration/register.html', context)
+
+def login_view(request):
+    form = CustomAuthenticationForm()
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('product_list')
+    context = {'form': form}
+    return render(request, 'shop/registration/login.html', context)
+
