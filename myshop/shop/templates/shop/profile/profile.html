@@ -1,0 +1,14 @@
+<!-- templates/profile/profile.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Мой профиль</h1>
+<p>Имя пользователя: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+<p>Номер телефона: {{ profile.phone_number }}</p>
+<p>Адрес: {{ profile.address }}, {{ profile.city }}, {{ profile.country }}, {{ profile.zip_code }}</p>
+<a href="{% url 'edit_profile' %}">Редактировать профиль</a>
+<p>
+<a href="{% url 'logout' %}">Выход</a>
+</p>
+{% endblock %}

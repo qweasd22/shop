@@ -1,8 +1,9 @@
 # shop/views.py
 from django.shortcuts import redirect, render, get_object_or_404
-from .models import Category, Product
+from .models import Category, Product, CartItem, Cart,  Profile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+
 
 def product_list(request, category_slug=None):
     category = None
@@ -96,3 +97,44 @@ def login_view(request):
     context = {'form': form}
     return render(request, 'shop/registration/login.html', context)
 
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
+
+@login_required
+def profile_view(request):
+    profile = request.user.profile
+    context = {
+        'profile': profile,
+    }
+    return render(request, 'shop/profile/profile.html', context)
+
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'shop/profile/edit_profile.html', context)
+
+
+def logout(request):
+    request.user = None
+    return redirect('product_list')
