@@ -1,0 +1,33 @@
+<!-- shop/cart.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Моя корзина</h1>
+<table class="">
+    <tr class="">
+        <th>Товар</th>
+        <th>Количество</th>
+        <th>Цена</th>
+        <th></th>
+    </tr>
+    {% for item in cart_items %}
+    <tr class="cart-item">
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.product.price }} руб.</td>
+        <td><a href="{% url 'remove_from_cart' item.product.pk %}">Удалить</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<style>
+    .cart-item {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .cart-item td {
+        padding: 5px;
+    }
+</style>
+{% endblock %}
