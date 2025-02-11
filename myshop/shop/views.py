@@ -138,3 +138,34 @@ def edit_profile(request):
 def logout(request):
     request.user = None
     return redirect('product_list')
+
+from rest_framework.response import Response 
+from rest_framework.views import APIView
+from .serializers import ProductSerializer
+from rest_framework.generics import get_object_or_404
+class ProductView(APIView):
+    def get(self, request, pk=None):
+        queryset = Product.objects.all() if pk is None else Product.objects.filter(pk=pk)
+        products = get_object_or_404(queryset) if pk else queryset
+        serializer = ProductSerializer(products, many=pk is None)
+        return Response({'products': serializer.data} if pk is None else serializer.data)
+
+    def post(self, request,pk):
+        serializer = ProductSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'products': serializer.data}, status=201)
+
+    def put(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        serializer = ProductSerializer(instance=product, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'product "{}" updated'.format(product.name): serializer.data})
+    
+    def delete(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        product.delete()
+        return Response({'product "{}" deleted'.format(product.name): product.name})
+
+        
