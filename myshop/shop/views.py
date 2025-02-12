@@ -145,14 +145,10 @@ from rest_framework.generics import get_object_or_404, ListCreateAPIView, Retrie
 from .models import Product
 from .serializers import ProductSerializer
 
-class ProductView(ListCreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    def perform_create(self, serializer):
-        product = get_object_or_404(Product, id=self.request.data.get('id'))
-        return serializer.save(product=product)
-
-class ProductDetailView(RetrieveUpdateAPIView, RetrieveAPIView, RetrieveDestroyAPIView):
+from rest_framework import viewsets 
+from .models import Product
+from .serializers import ProductSerializer
+class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
