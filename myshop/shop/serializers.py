@@ -5,7 +5,7 @@ from .models import Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'category']
+        fields = ['id', 'name', 'price', 'category','image']
 
     def create(self, validated_data):
         return Product.objects.create(**validated_data)
@@ -19,3 +19,4 @@ class ProductSerializer(serializers.ModelSerializer):
     
     def delete(self, instance):
         instance.delete()
+        

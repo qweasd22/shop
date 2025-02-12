@@ -3,7 +3,7 @@ from django.urls import path
 from .views import product_list, product_detail, add_to_cart, remove_from_cart, view_cart, register_view, login_view
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import ProductView
+from .views import ProductView, ProductDetailView
 
 
 urlpatterns = [
@@ -16,7 +16,7 @@ urlpatterns = [
     path('remove-from-cart/<int:product_id>/', remove_from_cart, name='remove_from_cart'),
     path('view-cart/', view_cart, name='view_cart'),
     path('api/products/', ProductView.as_view()),
-    path('api/products/<int:pk>/', ProductView.as_view()),
+    path('api/products/<int:pk>/', ProductDetailView.as_view()),
     
     
     
