@@ -1,0 +1,1 @@
+id - 4, name - Iphone 16, price - 100.00, category - 2.
