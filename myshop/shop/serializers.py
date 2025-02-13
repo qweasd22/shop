@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, Profile, User
+from .models import Product, Profile, User, Snippet
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,7 +39,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Snippet
+
+
 
 
 class SnippetSerializer(serializers.HyperlinkedModelSerializer):
@@ -51,23 +52,7 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
         model = Snippet
         fields = ('url', 'id', 'highlight', 'owner', 'title', 'code',
                   'linenos', 'language', 'style')
-    def create(self, validated_data: dict) -> Snippet:
-        """ 
-        Create and return a new `Snippet` instance, given the validated data as a dictionary.
-        """ 
-        return Snippet.objects.create(**validated_data)
 
-    def update(self, instance: Snippet, validated_data: dict) -> Snippet:
-        """ 
-        Update and return an existing `Snippet` instance, given the validated data as a dictionary.
-        """ 
-        instance.title = validated_data.get('title', instance.title)
-        instance.code = validated_data.get('code', instance.code)
-        instance.linenos = validated_data.get('linenos', instance.linenos)
-        instance.language = validated_data.get('language', instance.language)
-        instance.style = validated_data.get('style', instance.style)
-        instance.save()
-        return instance
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     snippets = serializers.HyperlinkedRelatedField(
@@ -76,5 +61,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'id', 'username', 'snippets')
-    
     

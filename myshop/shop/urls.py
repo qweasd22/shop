@@ -5,12 +5,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from rest_framework.routers import DefaultRouter 
-from .views import ProductViewSet , UserViewSet
-from rest_framework.urlpatterns import format_suffix_patterns
+
 
 router = DefaultRouter() 
-router.register(r'products', ProductViewSet, basename='product') 
-router.register(r'users', UserViewSet, basename='user')
+
+from .views import SnippetViewSet, UserViewSet, ProductViewSet, UserViewSet
+from rest_framework import permissions
+
+from .permissions import IsOwnerOrReadOnly
+
+router.register(r'snippets', SnippetViewSet)
+router.register(r'users', UserViewSet)
+router.register(r'products', ProductViewSet)
+
+
 
 
 urlpatterns = [
