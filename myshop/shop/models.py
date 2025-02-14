@@ -2,6 +2,8 @@ from django.db import models
 from carton.cart import CartItem
 from django.contrib.auth.models import User
 from django.conf import settings
+from pygments.formatters.html import HtmlFormatter 
+
 
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
@@ -14,8 +16,14 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
+from django.contrib.auth import get_user_model
 class Product(models.Model):
+    owner = models.ForeignKey(
+        get_user_model(), 
+        on_delete=models.CASCADE,
+        related_name='products',
+        null=True
+    )
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, db_index=True)
@@ -25,6 +33,7 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+   
 
     class Meta:
         ordering = ('name',)
@@ -67,42 +76,4 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-from django.db import models
-from pygments import highlight
-from pygments.formatters.html import HtmlFormatter
-from pygments.lexers import get_all_lexers, get_lexer_by_name
-from pygments.styles import get_all_styles
 
-LEXERS = [item for item in get_all_lexers() if item[1]]
-LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
-STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
-
-
-class Snippet(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    title = models.CharField(max_length=100, blank=True, default='')
-    code = models.TextField()
-    linenos = models.BooleanField(default=False)
-    language = models.CharField(
-        choices=LANGUAGE_CHOICES, default='python', max_length=100)
-    style = models.CharField(
-        choices=STYLE_CHOICES, default='friendly', max_length=100)
-    owner = models.ForeignKey(
-        'auth.User', related_name='snippets', on_delete=models.CASCADE)
-    highlighted = models.TextField()
-
-    class Meta:
-        ordering = ('created', )
-
-    def save(self, *args, **kwargs):
-        """
-        Use the `pygments` library to create a highlighted HTML
-        representation of the code snippet.
-        """
-        lexer = get_lexer_by_name(self.language)
-        linenos = self.linenos and 'table' or False
-        options = self.title and {'title': self.title} or {}
-        formatter = HtmlFormatter(
-            style=self.style, linenos=linenos, full=True, **options)
-        self.highlighted = highlight(self.code, lexer, formatter)
-        super(Snippet, self).save(*args, **kwargs)
