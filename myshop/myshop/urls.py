@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from shop.views import product_list, product_detail, add_to_cart, remove_from_cart, view_cart, register_view, login_view, profile_view, edit_profile, logout
-
+from rest_framework.authtoken import views as auth_views
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -16,6 +16,8 @@ urlpatterns = [
     path('remove-from-cart/<int:product_id>/', remove_from_cart, name='remove_from_cart'),
     path('', include('shop.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-token-auth/', auth_views.obtain_auth_token, name='api_token_auth'),
+
     
     
     

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "shop.apps.ShopConfig",
     "rest_framework",
+    "rest_framework.authtoken",
 ]
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -75,13 +76,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myshop.wsgi.application'
 
-REST_FRAMEWORK = { 
-# Use Django's standard `django.contrib.auth` permissions, 
-# or allow read-only access for unauthenticated users. 
-'DEFAULT_PERMISSION_CLASSES': [ 
-'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly' 
-] 
-} 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Глобальное ограничение
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
