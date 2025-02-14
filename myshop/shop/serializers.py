@@ -1,8 +1,10 @@
 from rest_framework import serializers
 
-from .models import Product, Profile, User, Snippet
+
+from .models import Product, Profile, User
 
 class ProductSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Product
         fields = ['id', 'name', 'price', 'category','image']
@@ -21,6 +23,7 @@ class ProductSerializer(serializers.ModelSerializer):
         instance.delete()
 
 class UserSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = User
         fields = ['username','id','email']
@@ -37,21 +40,10 @@ class UserSerializer(serializers.ModelSerializer):
     def delete(self, instance):
         instance.delete()
 
-from django.contrib.auth.models import User
-from rest_framework import serializers
 
 
 
 
-class SnippetSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    highlight = serializers.HyperlinkedIdentityField(
-        view_name='snippet-highlight', format='html')
-
-    class Meta:
-        model = Snippet
-        fields = ('url', 'id', 'highlight', 'owner', 'title', 'code',
-                  'linenos', 'language', 'style')
 
 
 
