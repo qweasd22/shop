@@ -150,7 +150,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Product, User
 from .serializers import ProductSerializer
-class ProductViewSet(viewsets.ModelViewSet):
+from rest_framework import mixins 
+from rest_framework import generics 
+class ProductViewSet(viewsets.ModelViewSet,):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
